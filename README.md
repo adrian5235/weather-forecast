@@ -1,6 +1,6 @@
 # weather-forecast
 
-This template should help get you started developing with Vue 3 in Vite.
+A web application with which you can get weather forecast for your desired location. To achieve this, application uses the free Open-Meteo weather API: https://open-meteo.com/.
 
 ## Recommended IDE Setup
 
