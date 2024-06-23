@@ -11,6 +11,8 @@ import Button from 'primevue/button';
 import Chart from 'primevue/chart';
 import Toast from 'primevue/toast';
 import ToastService from 'primevue/toastservice';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
 
 const app = createApp(App);
 app.use(PrimeVue);
@@ -20,5 +22,7 @@ app.component("InputText", InputText);
 app.component("Button", Button);
 app.component("Chart", Chart);
 app.component("Toast", Toast);
+app.component("DataTable", DataTable);
+app.component("Column", Column);
 
 app.mount('#app');
