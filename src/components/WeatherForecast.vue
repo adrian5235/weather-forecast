@@ -1,4 +1,5 @@
 <template>
+  <Toast />
   <h2>Enter your location</h2>
   <div class="flex gap-2">
     <InputText id="location" v-model="location" />
@@ -34,7 +35,9 @@ import { ref } from 'vue';
 import WeatherService from '../services/WeatherService';
 import WeatherForecastList from './WeatherForecastList.vue';
 import WeatherForecastChart from './WeatherForecastChart.vue';
+import { useToast } from 'primevue/usetoast';
 
+const toast = useToast();
 const location = ref('');
 const locationEntered = ref('');
 const chosenDayIndex = ref(0);
@@ -54,13 +57,18 @@ const dayNames = [
 
 function getWeatherForecastForNextSevenDaysAndFormatIt() {
   WeatherService.getLocationLatitudeAndLongitude(location.value).then((response) => {
-    let locationLatitude = response.data.results[0].latitude;
-    let locationLongitude = response.data.results[0].longitude;
-    WeatherService.getWeatherForecastForNextSevenDays(locationLatitude, locationLongitude).then((response) => {
-      locationEntered.value = location.value;
-      formatWeatherForecast(response.data);
-    })
-  })
+    if (!response.data.results) {
+      toast.add({ severity: 'error', summary: 'Something went wrong', detail: 'Could not fetch the weather forecast. Check if the entered location name is correct.', life: 3000 });
+    } else {
+      let locationLatitude = response.data.results[0].latitude;
+      let locationLongitude = response.data.results[0].longitude;
+      WeatherService.getWeatherForecastForNextSevenDays(locationLatitude, locationLongitude).then((response) => {
+        toast.add({ severity: 'success', summary: 'Success', detail: 'The weather forecast has been succesfully fetched.', life: 3000 });
+        locationEntered.value = location.value;
+        formatWeatherForecast(response.data);
+      });
+    }
+  });
 }
 
 function formatWeatherForecast(fetchedWeatherForecast) {
@@ -106,6 +114,8 @@ function isHourEarlierThanTenAm(date) {
 function getDay(dayNumber) {
   if (dayNumber >= dayNames.length) {
     dayNumber -= dayNames.length;
+  } else if (dayNumber < 0) {
+    dayNumber += dayNames.length;
   }
 
   return dayNames[dayNumber];
